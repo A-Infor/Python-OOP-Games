@@ -21,16 +21,14 @@ class Battle:
         
     def _play_round(self, round_number):
         (attacker, defender) = self._define_attacker_and_defender()
-        attacker_attack      = attacker.get_stats()['attack']
-        defender_defense     = defender.get_stats()['defense']
-        damage_caused        = max(0, attacker_attack - defender_defense)
+        attack_intensity     = attacker.attack()
+        defense_intensity, damage_caused = defender.defend(attack_intensity)
         
         print(f'\nRound {round_number} started!')
-        print(f"\t{attacker.get_stats()['NAME']} attacks with {attacker_attack} points of force")
-        print(f"\t{defender.get_stats()['NAME']} blocks the attack by {defender_defense} points")
+        print(f"\t{attacker.get_stats()['NAME']} attacks with {attack_intensity}/{attacker.get_stats()['max_attack']} points of force")
+        print(f"\t{defender.get_stats()['NAME']} blocks the attack by {defense_intensity}/{defender.get_stats()['max_defense']} points")
         
         print(f'\tThe resulting damage is {damage_caused}')
-        defender.stat_decrease('health', damage_caused)
         
         print( '\t      PLAYER\tENEMY')
         print(f"\tLIFE:   {self.player.get_stats()['health']}    \t  {self.enemy.get_stats()['health']}")

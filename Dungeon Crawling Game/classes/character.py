@@ -2,20 +2,30 @@ import random
 
 class Character:
     def __init__(self, name, is_human = False):
-        self._name     = name.upper()
-        self._is_human = is_human
-        self._level    = 1
-        self._health   = random.randint(1, 9)
-        self._attack   = random.randint(1, 9)
-        self._defense  = random.randint(1, 9)
+        self._NAME         = name.upper()
+        self._is_human     = is_human
+        self._level        = 1
+        self._health       = random.randint(1, 9)
+        self._max_attack   = random.randint(1, 9)
+        self._max_defense  = random.randint(1, 9)
     
     def get_stats(self):
-        return {'NAME'    : self._name    ,
-                'health'  : self._health  ,
-                'level'   : self._level   ,
-                'attack'  : self._attack  ,
-                'defense' : self._defense
+        return {'NAME'        : self._NAME        ,
+                'health'      : self._health      ,
+                'level'       : self._level       ,
+                'max_attack'  : self._max_attack  ,
+                'max_defense' : self._max_defense
                 }
+    
+    def attack(self):
+        return random.randint(0, self._max_attack)
+    
+    def defend(self, attack_intensity):
+        defense_intensity = random.randint(0, self._max_defense)
+        
+        damage = max(0, attack_intensity - defense_intensity)
+        self.stat_decrease('health', damage)
+        return defense_intensity, damage
     
     def stat_decrease(self, stat_name, how_much):
         if how_much > 0:
