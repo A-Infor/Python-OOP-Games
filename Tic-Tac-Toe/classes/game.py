@@ -18,11 +18,11 @@ class TicTacToeGame:
                 board.submit_move(human, human_move)
                 board.print_actual_board()
                 
-                if   board.check_is_tie():
-                    print("It's a tie!")
-                    break
-                elif board.check_is_game_over(human, human_move):
+                if   board.check_is_game_over(human, human_move):
                     print('You won this round!')
+                    break
+                elif board.check_is_tie():
+                    print("It's a tie!")
                     break
                 else:
                     computer_move = computer.get_move()

@@ -15,37 +15,3 @@ from classes  import Move, Player, Board, TicTacToeGame
 
 game = TicTacToeGame()
 game.start_game()
-
-# ◼️  Final Move
-
-# In our current implementation of the game, if the board is almost full, there is only one move left, and the final move is the winning move, the game will show that the result was a tie.
-
-# For example:
-
-
-#     ... Previous steps.
-     
-#     Positions:
-#     | 1 | 2 | 3 |
-#     | 4 | 5 | 6 |
-#     | 7 | 8 | 9 |
-#     Board:
-#     | X |   | X |
-#     | O | X | O |
-#     | O | X | O |
-     
-#     Please enter your move (1-9): 2
-     
-#     Positions:
-#     | 1 | 2 | 3 |
-#     | 4 | 5 | 6 |
-#     | 7 | 8 | 9 |
-#     Board:
-#     | X | X | X |
-#     | O | X | O |
-#     | O | X | O |
-     
-#     It's a tie! 👍 Try again.
-
-
-# Try to fix this by updating the code. You will need to check if the player or the computer won the game before checking if there was a tie. 

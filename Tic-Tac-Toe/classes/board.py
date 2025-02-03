@@ -1,6 +1,3 @@
-from .player import Player
-from .move   import Move
-
 class Board:
     
     EMPTY_CELL  = 0
@@ -31,7 +28,11 @@ class Board:
         if value == Board.EMPTY_CELL:
             self.game_board[row][col] = player.marker
         else:
-            print('This position is already taken. Please enter another one.')
+            if player.is_human:
+                print('You chose a position that is already taken. Please chose an empty one next turn.')
+            else:
+                print('The computer chose a position that is already taken, and thus wasted its turn.')
+            
     
     def check_is_tie(self):
         empty_counter = 0
