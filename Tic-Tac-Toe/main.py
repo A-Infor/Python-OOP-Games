@@ -1,20 +1,7 @@
-from .classes  import Move, Player, Board
+from classes  import Move, Player, Board, TicTacToeGame
 
-# ◼️ Game Rules
-
-# Let's talk a little bit about the rules of Tic-Tac-Toe:
-
-#     In Tic-Tac-Toe, two players try to fill a row,  a column, the diagonal, or the antidiagonal of a 3x3 game board.
-
-# This will be our game board.
-
-#     | 1 | 2 | 3 |
-#     | 4 | 5 | 6 |
-#     | 7 | 8 | 9 |
-
-#     The user will enter an integer from 1 to 9 (inclusive) to select the position on the board.
-
-#     On each turn, each player will select a particular position on the board and a marker will be added to that position.
+# TO-DO: input('Select difficulty level:')
+# TO-DO: best-of-three!
 
 #     A human player will play against a computer player, which will select a random position.
 
@@ -26,4 +13,39 @@ from .classes  import Move, Player, Board
 
 #     When the game is over, we will ask the user if he/she would like to continue playing. We will take user input and start a new round if the player chooses to continue the game.
 
-pass
+game = TicTacToeGame()
+game.start_game()
+
+# ◼️  Final Move
+
+# In our current implementation of the game, if the board is almost full, there is only one move left, and the final move is the winning move, the game will show that the result was a tie.
+
+# For example:
+
+
+#     ... Previous steps.
+     
+#     Positions:
+#     | 1 | 2 | 3 |
+#     | 4 | 5 | 6 |
+#     | 7 | 8 | 9 |
+#     Board:
+#     | X |   | X |
+#     | O | X | O |
+#     | O | X | O |
+     
+#     Please enter your move (1-9): 2
+     
+#     Positions:
+#     | 1 | 2 | 3 |
+#     | 4 | 5 | 6 |
+#     | 7 | 8 | 9 |
+#     Board:
+#     | X | X | X |
+#     | O | X | O |
+#     | O | X | O |
+     
+#     It's a tie! 👍 Try again.
+
+
+# Try to fix this by updating the code. You will need to check if the player or the computer won the game before checking if there was a tie. 

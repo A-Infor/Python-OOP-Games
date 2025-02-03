@@ -1,6 +1,6 @@
 import random
 
-from move import Move
+from .move   import Move
 
 class Player:
     
@@ -9,7 +9,7 @@ class Player:
     
     def __init__(self, is_human):
         self._is_human = is_human
-        self._marker = Player.MARK_PLAYER if is_human else Player.MARK_COMPUTER
+        self.marker = Player.MARK_PLAYER if is_human else Player.MARK_COMPUTER
         
     def get_move(self):
         return self.get_human_move() if self._is_human else self.get_computer_move()
