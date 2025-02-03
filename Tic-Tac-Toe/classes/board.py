@@ -11,7 +11,7 @@ class Board:
                             [Board.EMPTY_CELL,Board.EMPTY_CELL,Board.EMPTY_CELL] ]
     
     def print_board_mapping(self):
-        print('\n| 7 | 8 | 9 |\n| 4 | 5 | 6 |\n| 1 | 2 | 3 |')
+        print('\n| 7 | 8 | 9 |\n| 4 | 5 | 6 |\n| 1 | 2 | 3 |\n')
     
     def print_actual_board(self):
         for row in self.game_board:
