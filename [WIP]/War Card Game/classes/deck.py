@@ -1,14 +1,22 @@
+import random
+
+from card import Card
+
 class Deck:
     
     def __init__(self):
         # The user of the Deck class shall be able to choose if the deck is initially empty or not when the deck instance is created.
         
-        # Shall contain a list of instances of the Card class (these are the cards that belong to the deck).
-        self.cards = None
-        # Corresponds to the length of the list of cards in the deck.
-        self.size  = None
+        self.cards = []
+        self.size  = len(self.cards)
     
-    def build(self):
+    def _update_deck_size(self):
+        self.size  = len(self.cards)
+    
+    def build(self):        
+        for i in range(52):
+            self.cards.append(Card(random.randint(2, 14)))
+        self._update_deck_size()
         #     The build method shall build the deck by creating 52 card instances with numbers from 2 to 14 (inclusive) for each one of the four possible suits.
         pass
     
@@ -22,8 +30,10 @@ class Deck:
     
     def draw(self):
         #     The draw method shall return and remove the last card in the list of cards in the deck (this represents removing it from the top of the deck).
+        self._update_deck_size()
         pass
     
     def add(self):
         #     The add method shall insert a new card object to the beginning of the list of cards in the deck (this represents removing it from the bottom of the deck).
+        self._update_deck_size()
         pass
