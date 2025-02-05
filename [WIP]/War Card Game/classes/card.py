@@ -2,22 +2,21 @@ from suit import Suit
 
 class Card:
     
-    value_name_dict = {11 : 'Jack' ,
-                       12 : 'Queen',
-                       13 : 'King' ,
-                       14 : 'Ace'  }
+    SPECIAL_CARDS = {11 : 'Jack' ,
+                     12 : 'Queen',
+                     13 : 'King' ,
+                     14 : 'Ace'  }
     
-    def __init__(self, value):
-        self.suit  = Suit()
+    def __init__(self, suit, value):
+        self.suit  = Suit(suit)
         self.value = value
 
     def show(self):
-        print('Card description:', end=' ')
+        print(f'{self.suit.symbol}', end=' ')
         if self.is_special():
-            print(Card.value_name_dict[self.value], end='')
+            print(Card.SPECIAL_CARDS[self.value])
         else:
-            print(self.value, end='')
-        print(f'{self.suit.description}, {self.suit.symbol}')
+            print(self.value)
     
     def is_special(self):
        return True if self.value >= 11 <= 14 else False

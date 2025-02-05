@@ -1,10 +1,10 @@
 class Suit:
     
-    symbol_description_dict = {'clubs'    : '♣',
-                               'diamonds' : '♦',
-                               'hearts'   : '♥',
-                               'spades'   : '♠'}
+    SYMBOLS = {'♣' : 'clubs'    ,
+               '♦' : 'diamonds' ,
+               '♥' : 'hearts'   ,
+               '♠' : 'spades'   }
     
-    def __init__(self):
-        self.description = None
-        self.symbol      = None
+    def __init__(self, suit):
+        self.symbol      = suit
+        self.description = Suit.SYMBOLS[suit]
