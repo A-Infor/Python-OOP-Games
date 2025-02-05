@@ -2,9 +2,9 @@ class Board:
     
     EMPTY_CELL  = 0
     
-    def __init__(self):
+    def __init__(self, difficulty_level):
         self.reset_board()
-    
+        self.difficulty_level = difficulty_level
     def reset_board(self):
         self.game_board = [ [Board.EMPTY_CELL,Board.EMPTY_CELL,Board.EMPTY_CELL] ,
                             [Board.EMPTY_CELL,Board.EMPTY_CELL,Board.EMPTY_CELL] ,
@@ -27,8 +27,17 @@ class Board:
         
         if value == Board.EMPTY_CELL:
             self.game_board[row][col] = player.MARKER
+            return True
         else:
-            print('An already taken position was chosen. The player wasted its round.')
+            match self.difficulty_level:
+                case 1    :
+                    print(f'An already taken position was chosen ({move.position}). The player wasted its round.')
+                    return False
+                case 2 | 3:
+                    print(f'An already taken position was chosen ({move.position}). A valid one must be chosen.')
+                    return False
+                case _    :
+                    print('An invalid difficulty level was chosen!')
     
     def check_is_tie(self):
         empty_counter = 0

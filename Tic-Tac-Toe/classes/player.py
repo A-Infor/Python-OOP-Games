@@ -1,33 +1,35 @@
 import random
+from abc import ABC, abstractmethod
 
 from .move import Move
 
-class Player:
-    def __init__(self):
-        pass
+class Player(ABC):
     
+    @abstractmethod
     def get_move(self):
         pass
 
 class PlayerHuman(Player):
-    def __init__(self):
-        self.MARKER = 'X'
+    
+    MARKER = 'X'
     
     def get_move(self):
         move = Move(0) # Invalid move
         
-        while not move.is_valid():
+        while not move.is_within_range():
             user_input = int(input('Please enter your move (1-9): '))
             move = Move(user_input)
             
-            if not move.is_valid():
+            if not move.is_within_range():
                 print('Invalid input. Please, enter a integer between 1 and 9.')
             
         return move
 
 class PlayerComputer(Player):
+    
+    MARKER = 'O'
+    
     def __init__(self, difficulty_level):
-        self.MARKER       = 'O'
         self.intelligence = difficulty_level
     
     def get_move(self):
@@ -43,6 +45,7 @@ class PlayerComputer(Player):
                 return False
     
     def get_move_1(self):
+        # Chooses any cell, including already filled ones.
         valid_choice_options = list(range(1, 10))
         move = Move(random.choice(valid_choice_options))
         print('Computer move (1-9):', move.position)
@@ -51,7 +54,11 @@ class PlayerComputer(Player):
     
     def get_move_2(self):
         # Only chooses blank cells, still at random.
-        pass
+        valid_choice_options = list(range(1, 10))
+        move = Move(random.choice(valid_choice_options))
+        print('Computer move (1-9):', move.position)
+        
+        return move
     
     def get_move_3(self):
         # Doesn't play at random.

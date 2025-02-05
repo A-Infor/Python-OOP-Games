@@ -6,9 +6,10 @@ class TicTacToeGame:
     def __init__(self):
         print('Welcome to Tic-Tac-Toe!')
         
-        self.board = Board()
         self.difficulty_level = self._set_difficulty_level()
-        if self.difficulty_level != 0:
+        self.board = Board(self.difficulty_level)
+        
+        if self.difficulty_level >= 0 <= 3:
             self.run_game()
         
     def run_game(self):
@@ -29,9 +30,17 @@ class TicTacToeGame:
                 elif self.board.check_is_tie():
                     print("It's a tie!")
                     break
-                else:
+                else: # Else, computer plays:
                     computer_move = computer.get_move()
-                    self.board.submit_move(computer, computer_move)
+                    match self.difficulty_level:
+                        case 1    : # No checks
+                            self.board.submit_move(computer, computer_move)
+                        case 2 | 3: # Keep trying moves until finds a blank cell
+                            while not self.board.submit_move(computer, computer_move):
+                                computer_move = computer.get_move()
+                        case _    :
+                            print('Error! Invalid difficulty level selected.')
+                            return
                     self.board.print_actual_board()
                     
                     if self.board.check_is_game_over(computer, computer_move):
@@ -47,6 +56,7 @@ class TicTacToeGame:
                     case 'X' | 'x':
                         print('Got it!')
                         self.start_new_round()
+                        break
                     case  _       :
                         print('Invalid reply. Please, reply only with X or O.')
                         
