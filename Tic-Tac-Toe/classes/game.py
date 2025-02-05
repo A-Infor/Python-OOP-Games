@@ -1,5 +1,5 @@
 from .board  import Board
-from .player import Player
+from .player import PlayerHuman, PlayerComputer
 
 class TicTacToeGame:
     
@@ -12,8 +12,8 @@ class TicTacToeGame:
             self.run_game()
         
     def run_game(self):
-        human      = Player(is_human=True)
-        computer   = Player(is_human=False)
+        human      = PlayerHuman()
+        computer   = PlayerComputer(self.difficulty_level)
         
         self.board.print_actual_board()
         
@@ -37,17 +37,18 @@ class TicTacToeGame:
                     if self.board.check_is_game_over(computer, computer_move):
                         print('The computer won this round...')
                         break
-            play_again = input('Would you like to play again?\nX = Yes, O = No ')
-            
-            match play_again:
-                case 'O' | 'o':
-                    print('Bye! See you later.')
-                    break
-                case 'X' | 'x':
-                    print('Got it!')
-                    self.start_new_round()
-                case  _       :
-                    print('Invalid reply. Please, reply only with X or O.')
+            while True:
+                play_again = input('Would you like to play again?\nX = Yes, O = No ')
+                
+                match play_again:
+                    case 'O' | 'o':
+                        print('Bye! See you later.')
+                        return
+                    case 'X' | 'x':
+                        print('Got it!')
+                        self.start_new_round()
+                    case  _       :
+                        print('Invalid reply. Please, reply only with X or O.')
                         
     def start_new_round(self):
         print('New round:')
@@ -62,8 +63,8 @@ class TicTacToeGame:
     
     \tLEVEL COMPUTER OPPONENT                    MISTAKES (TAKEN POSITIONS)
     \t1.... Totally random moves only.           Allowed, wastes a turn.
-    \t2.... Random moves, only valid positions.  Not allowed.
-    \t3.... Knows how to play.                   Not allowed.
+    \t2.... Random moves, only blank positions.  Not allowed.
+    \t3.... Knows how to play and tries to win.  Not allowed.
     
     Your choice: """))
     

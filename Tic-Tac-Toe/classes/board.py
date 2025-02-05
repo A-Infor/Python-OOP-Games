@@ -26,13 +26,9 @@ class Board:
         value           = self.game_board[row][col]
         
         if value == Board.EMPTY_CELL:
-            self.game_board[row][col] = player.marker
+            self.game_board[row][col] = player.MARKER
         else:
-            if player.is_human:
-                print('You chose a position that is already taken. Please chose an empty one next turn.')
-            else:
-                print('The computer chose a position that is already taken, and thus wasted its turn.')
-            
+            print('An already taken position was chosen. The player wasted its round.')
     
     def check_is_tie(self):
         empty_counter = 0
@@ -53,14 +49,14 @@ class Board:
         row_index = last_move.get_row()
         board_row = self.game_board[row_index]
         
-        return (board_row.count(player.marker) == 3)
+        return (board_row.count(player.MARKER) == 3)
     
     def _check_col(self, player, last_move):
         col_index     = last_move.get_col()
         markers_count = 0
         
         for i in range(3):
-            if self.game_board[i][col_index] == player.marker:
+            if self.game_board[i][col_index] == player.MARKER:
                 markers_count += 1 
         
         return (markers_count == 3)
@@ -69,7 +65,7 @@ class Board:
         markers_count = 0
         
         for i in range(3):
-            if self.game_board[i][i] == player.marker:
+            if self.game_board[i][i] == player.MARKER:
                 markers_count += 1
         
         return (markers_count == 3)
@@ -78,7 +74,7 @@ class Board:
         markers_count = 0
         
         for i in range(3):
-            if self.game_board[i][2-i] == player.marker:
+            if self.game_board[i][2-i] == player.MARKER:
                 markers_count += 1
         
         return (markers_count == 3)
