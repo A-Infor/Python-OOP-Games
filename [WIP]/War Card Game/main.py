@@ -1,3 +1,3 @@
-# 26 cards for each player
+from classes import Suit, Card, Deck, Player, WarCardGame
 
-# game over = one player has all cards, the other has none
+game = WarCardGame()

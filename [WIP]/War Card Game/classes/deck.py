@@ -1,6 +1,7 @@
 import random
 
 from card import Card
+from suit import Suit
 
 class Deck:
     
@@ -13,8 +14,8 @@ class Deck:
         
         for suit in ['♣', '♦', '♥', '♠']:
             for value in range(2, 15):
-                cards.append(Card(suit, value))
-                
+                cards.append(Card(Suit(suit), value))
+
         return cards
 
     def _update_deck_size(self):
@@ -28,9 +29,10 @@ class Deck:
         random.shuffle(self.cards)
     
     def draw(self):
-        card = self.cards.pop()
-        self._update_deck_size()
-        return card
+        if (card := self.cards.pop()):
+            self._update_deck_size()
+            return card
+        else: return None
     
     def add(self, card):
         self.cards.insert(0, card)

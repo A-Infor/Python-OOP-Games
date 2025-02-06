@@ -8,11 +8,12 @@ class Player:
         self.is_computer = None
         
     def has_empty_deck(self):
-        return True if self.deck.size == 0 else False
+        return (self.deck.size == 0)
     
     def draw_card(self):
         if not self.has_empty_deck():
             return self.deck.draw()
+        else: return None
     
     def add_card(self, card):
         self.deck.add(card)
