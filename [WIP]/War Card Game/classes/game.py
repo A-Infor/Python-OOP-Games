@@ -9,6 +9,7 @@ class WarCardGame:
         self._computer = computer
         self._deck     = deck
         
+        print('War Card Game')
         self.make_initial_decks()
         
     def make_initial_decks(self):
@@ -27,10 +28,12 @@ class WarCardGame:
         human_card    = self._human   .draw_card()
         computer_card = self._computer.draw_card()
         
-        print('Your card:')
+        print('CARDS DRAWN:')
+        print("\tHUMAN'S\t\t\tCOMPUTER'S", end='\n\t')
         human_card.show()
-        print("Computer's card")
+        print('', end='\t\t\t\t')
         computer_card.show()
+        print()
         
         winner    = self.get_round_winner(human_card, computer_card)
         cards_won = self.get_cards_won   (human_card, computer_card, cards_from_war)
@@ -52,11 +55,11 @@ class WarCardGame:
         
     def get_round_winner(self, human_card, computer_card):
         if   human_card.value > computer_card.value:
-            return WarCardGame.HUMAN
+            return WarCardGame.ID_HUMAN
         elif human_card.value < computer_card.value:
-            return WarCardGame.COMPUTER
+            return WarCardGame.ID_COMPUTER
         elif human_card.value == computer_card.value:
-            return WarCardGame.TIE
+            return WarCardGame.ID_TIE
         else:
             print('Error! Invalid card comparison occured!')
             return None
@@ -70,3 +73,33 @@ class WarCardGame:
     def add_cards_to_player(self, player, list_of_cards):
         for card in list_of_cards:
             player.add_card(card)
+    
+    def start_war(self, cards_from_battle):
+        human_cards    = []
+        computer_cards = []
+        
+        for i in range(3):
+            human_card    = self._human   .draw_card()
+            computer_card = self._computer.draw_card()
+            
+            human_cards   .append(   human_card)
+            computer_cards.append(computer_card)
+        
+        print('Six hidden cards: ??? ???')
+        
+        self.start_battle(cards_from_war= human_cards + computer_cards + cards_from_battle)
+    
+    def check_game_over(self):
+        if self._human.has_empty_deck():
+            print('Game over! The computer won.')
+            return True
+        elif self._computer.has_empty_deck():
+            print('Game over! You won!')
+            return True
+        else:
+            return False
+    
+    def print_stats(self):
+        print('CARDS ON DECK:')
+        print("\tHUMAN'S\t\t\tCOMPUTER'S")
+        print(f'\t{self._human.deck.size}\t\t\t\t{self._computer.deck.size}')

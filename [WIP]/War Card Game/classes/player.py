@@ -1,11 +1,10 @@
-from deck import Deck
+from .deck import Deck
 
 class Player:
     
-    def __init__(self):
-        self.name        = None
-        self.deck        = Deck(is_empty = False)
-        self.is_computer = None
+    def __init__(self, is_computer):
+        self.deck        = Deck(is_empty = True)
+        self.is_computer = is_computer
         
     def has_empty_deck(self):
         return (self.deck.size == 0)

@@ -1,4 +1,4 @@
-from suit import Suit
+from .suit import Suit
 
 class Card:
     
@@ -8,15 +8,15 @@ class Card:
                      14 : 'Ace'  }
     
     def __init__(self, suit, value):
-        self.suit  = Suit(suit)
+        self.suit  = suit
         self.value = value
 
     def show(self):
         print(f'{self.suit.symbol}', end=' ')
         if self.is_special():
-            print(Card.SPECIAL_CARDS[self.value])
+            print(Card.SPECIAL_CARDS[self.value], end='')
         else:
-            print(self.value)
+            print(self.value, end='')
     
     def is_special(self):
        return True if self.value >= 11 <= 14 else False
