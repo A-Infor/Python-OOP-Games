@@ -1,17 +1,43 @@
+from .move import Move
+
 class Board:
     
-    EMPTY_CELL  = 0
+    EMPTY_CELL       = 0
+    BOARD_MAPPING    = [ [7, 8, 9] ,
+                         [4, 5, 6] ,
+                         [1, 2, 3] ]
+    BOARD_COORDS_MAP = { '7':(0,0), '8':(0,1), '9':(0,2),
+                         '4':(1,0), '5':(1,1), '6':(1,2),
+                         '1':(2,0), '2':(2,1), '3':(2,2),
+                       }
     
     def __init__(self, difficulty_level):
         self.reset_board()
         self.difficulty_level = difficulty_level
+        
     def reset_board(self):
         self.game_board = [ [Board.EMPTY_CELL,Board.EMPTY_CELL,Board.EMPTY_CELL] ,
                             [Board.EMPTY_CELL,Board.EMPTY_CELL,Board.EMPTY_CELL] ,
                             [Board.EMPTY_CELL,Board.EMPTY_CELL,Board.EMPTY_CELL] ]
     
+    def enumerate_empty_positions(self):
+        empty_positions_set = set()
+        print('Checking empty positions:')
+        for position, (row, col) in Board.BOARD_COORDS_MAP.items():
+            if self.game_board[row][col] == Board.EMPTY_CELL:
+                print(f'\t{position} is empty')
+                empty_positions_set.add(int(position))
+            else:
+                print(f'\t{position} is not empty')
+        print(empty_positions_set)
+        return empty_positions_set
+            
     def print_board_mapping(self):
-        print('\n| 7 | 8 | 9 |\n| 4 | 5 | 6 |\n| 1 | 2 | 3 |\n')
+        for row in Board.BOARD_MAPPING:
+            print('\n|', end='')
+            for cell in row:
+                print(f' {cell} |', end='')
+        print()
     
     def print_actual_board(self):
         for row in self.game_board:
@@ -21,9 +47,9 @@ class Board:
         print()
 
     def submit_move(self, player, move):
-        row             = move.get_row()
-        col             = move.get_col()
-        value           = self.game_board[row][col]
+        row   = move.get_row()
+        col   = move.get_col()
+        value = self.game_board[row][col]
         
         if value == Board.EMPTY_CELL:
             self.game_board[row][col] = player.MARKER

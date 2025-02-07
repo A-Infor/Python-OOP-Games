@@ -31,13 +31,13 @@ class TicTacToeGame:
                     print("It's a tie!")
                     break
                 else: # Else, computer plays:
-                    computer_move = computer.get_move()
                     match self.difficulty_level:
                         case 1    : # No checks
+                            computer_move = computer.get_move(None)
                             self.board.submit_move(computer, computer_move)
-                        case 2 | 3: # Keep trying moves until finds a blank cell
-                            while not self.board.submit_move(computer, computer_move):
-                                computer_move = computer.get_move()
+                        case 2 | 3: # Looks which positions are empty before choosing
+                            computer_move = computer.get_move(self.board.enumerate_empty_positions())
+                            self.board.submit_move(computer, computer_move)
                         case _    :
                             print('Error! Invalid difficulty level selected.')
                             return
