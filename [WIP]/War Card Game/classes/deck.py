@@ -1,9 +1,10 @@
 import random
 
 from .card import Card
-from .suit import Suit
 
 class Deck:
+    
+    SUITS = ['♣', '♦', '♥', '♠']
     
     def __init__(self, is_empty):
         self.cards = [] if is_empty else self._build()
@@ -12,9 +13,9 @@ class Deck:
     def _build(self):
         cards = []
         
-        for suit in ['♣', '♦', '♥', '♠']:
+        for suit in Deck.SUITS:
             for value in range(2, 15):
-                cards.append(Card(Suit(suit), value))
+                cards.append(Card(suit, value))
 
         return cards
 

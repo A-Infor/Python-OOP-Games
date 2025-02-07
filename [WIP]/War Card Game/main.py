@@ -1,4 +1,4 @@
-from classes import Suit, Card, Deck, Player, WarCardGame
+from classes import Card, Deck, Player, WarCardGame
 
 human    = Player(is_computer=False)
 computer = Player(is_computer=True )
@@ -15,5 +15,5 @@ while not game.check_game_over():
     game.start_battle()
     game.print_stats ()
     
-    if (input('Are you ready for the next round? <y/n>')) == 'n':
+    if (input('Press ENTER to draw another card, or Q to quit')) == 'q':
         break

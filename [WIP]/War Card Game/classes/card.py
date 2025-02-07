@@ -1,5 +1,3 @@
-from .suit import Suit
-
 class Card:
     
     SPECIAL_CARDS = {11 : 'Jack' ,
@@ -12,11 +10,9 @@ class Card:
         self.value = value
 
     def show(self):
-        print(f'{self.suit.symbol}', end=' ')
-        if self.is_special():
-            print(Card.SPECIAL_CARDS[self.value], end='')
-        else:
-            print(self.value, end='')
+        print(f'{self.suit}', end=' ')
+        if self.is_special(): print(Card.SPECIAL_CARDS[self.value], end='')
+        else                : print(                   self.value , end='')
     
     def is_special(self):
        return True if self.value >= 11 <= 14 else False

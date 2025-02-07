@@ -5,7 +5,7 @@ class WarCardGame:
     ID_COMPUTER = 2
     
     def __init__(self, human, computer, deck):
-        self._human   = human
+        self._human    = human
         self._computer = computer
         self._deck     = deck
         
@@ -40,13 +40,13 @@ class WarCardGame:
        
         match winner:
             case 0:
-                print("It's a tie. This is war!")
+                print("It's a tie. This is WAR!")
                 self.start_war(cards_won)
             case 1:
-                print('You won this round!')
+                print('WINNER: you.')
                 self.add_cards_to_player(self._human, cards_won)
             case 2:
-                print('The computer won this round.')
+                print('WINNER: computer.')
                 self.add_cards_to_player(self._computer, cards_won)
             case _:
                 print('An error occurred! Non-valid winner ID.')
@@ -91,15 +91,15 @@ class WarCardGame:
     
     def check_game_over(self):
         if self._human.has_empty_deck():
-            print('Game over! The computer won.')
+            print('GAME OVER! The computer won.')
             return True
         elif self._computer.has_empty_deck():
-            print('Game over! You won!')
+            print('GAME OVER! You won!')
             return True
         else:
             return False
     
     def print_stats(self):
-        print('CARDS ON DECK:')
+        print('STACK SIZES:')
         print("\tHUMAN'S\t\t\tCOMPUTER'S")
         print(f'\t{self._human.deck.size}\t\t\t\t{self._computer.deck.size}')
