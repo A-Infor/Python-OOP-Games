@@ -6,9 +6,9 @@ class Board:
     BOARD_MAPPING    = [ [7, 8, 9] ,
                          [4, 5, 6] ,
                          [1, 2, 3] ]
-    BOARD_COORDS_MAP = { '7':(0,0), '8':(0,1), '9':(0,2),
-                         '4':(1,0), '5':(1,1), '6':(1,2),
-                         '1':(2,0), '2':(2,1), '3':(2,2),
+    BOARD_COORDS_MAP = { 7:(0,0), 8:(0,1), 9:(0,2),
+                         4:(1,0), 5:(1,1), 6:(1,2),
+                         1:(2,0), 2:(2,1), 3:(2,2),
                        }
     
     def __init__(self, difficulty_level):
@@ -22,14 +22,11 @@ class Board:
     
     def enumerate_empty_positions(self):
         empty_positions_set = set()
-        print('Checking empty positions:')
+
         for position, (row, col) in Board.BOARD_COORDS_MAP.items():
             if self.game_board[row][col] == Board.EMPTY_CELL:
-                print(f'\t{position} is empty')
                 empty_positions_set.add(int(position))
-            else:
-                print(f'\t{position} is not empty')
-        print(empty_positions_set)
+
         return empty_positions_set
             
     def print_board_mapping(self):
@@ -47,8 +44,7 @@ class Board:
         print()
 
     def submit_move(self, player, move):
-        row   = move.get_row()
-        col   = move.get_col()
+        (row, col) = Board.BOARD_COORDS_MAP[move.position]
         value = self.game_board[row][col]
         
         if value == Board.EMPTY_CELL:
@@ -81,13 +77,13 @@ class Board:
                 )
     
     def _check_row(self, player, last_move):
-        row_index = last_move.get_row()
+        (row_index,_) = Board.BOARD_COORDS_MAP[last_move.position]
         board_row = self.game_board[row_index]
         
         return (board_row.count(player.MARKER) == 3)
     
     def _check_col(self, player, last_move):
-        col_index     = last_move.get_col()
+        (_, col_index) = Board.BOARD_COORDS_MAP[last_move.position]
         markers_count = 0
         
         for i in range(3):
