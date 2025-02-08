@@ -1,3 +1,5 @@
+from time import sleep
+
 class WarCardGame:
     
     ID_TIE      = 0
@@ -43,10 +45,10 @@ class WarCardGame:
                 print("It's a tie. This is WAR!")
                 self.start_war(cards_won)
             case 1:
-                print('WINNER: you.')
+                print(f'WINNER: you. (+{len(cards_won)//2} cards)')
                 self.add_cards_to_player(self._human, cards_won)
             case 2:
-                print('WINNER: computer.')
+                print(f'WINNER: computer. (+{len(cards_won)//2} cards)')
                 self.add_cards_to_player(self._computer, cards_won)
             case _:
                 print('An error occurred! Non-valid winner ID.')
@@ -78,17 +80,28 @@ class WarCardGame:
         human_cards    = []
         computer_cards = []
         
-        for i in range(3):
-            human_card    = self._human   .draw_card()
-            computer_card = self._computer.draw_card()
+        if (self._human.deck.size >= 3) and (self._computer.deck.size >= 3):
+            for i in range(3):
+                human_card    = self._human   .draw_card()
+                computer_card = self._computer.draw_card()
+                
+                human_cards   .append(   human_card)
+                computer_cards.append(computer_card)
             
-            human_cards   .append(   human_card)
-            computer_cards.append(computer_card)
-        
-        print('Six hidden cards: ??? ???')
-        
-        self.start_battle(cards_from_war= human_cards + computer_cards + cards_from_battle)
-    
+            print('Both cards are kept in the table.')
+            print('Six more cards drawn (hidden): ▓ ▓ ▓ ║ ▓ ▓ ▓')
+            
+            self.start_battle(cards_from_war= human_cards + computer_cards + cards_from_battle)
+        elif (self._human.deck.size < 3):
+            print(f"WINNER: computer, because you only have {self._human.deck.size} cards and can't fight the war.")
+            return False
+        elif (self._computer.deck.size < 3):
+            print(f"WINNER: you, because computer only have {self._computer.deck.size} cards and can't fight the war.")
+            return False
+        else:
+            print('Error! Unclear if both players are able to fight the war.')
+            return False
+
     def check_game_over(self):
         if self._human.has_empty_deck():
             print('GAME OVER! The computer won.')
@@ -99,7 +112,7 @@ class WarCardGame:
         else:
             return False
     
-    def print_stats(self):
+    def print_stack_sizes(self):
         print('STACK SIZES:')
         print("\tHUMAN'S\t\t\tCOMPUTER'S")
         print(f'\t{self._human.deck.size}\t\t\t\t{self._computer.deck.size}')
