@@ -89,7 +89,7 @@ class WarCardGame:
                 computer_cards.append(computer_card)
             
             print('Both cards are kept in the table.')
-            print('Six more cards drawn (hidden): ▓ ▓ ▓ ║ ▓ ▓ ▓')
+            print('Six more cards drawn (hidden): 🂠 🂠 🂠 ║ 🂠 🂠 🂠')
             
             self.start_battle(cards_from_war= human_cards + computer_cards + cards_from_battle)
         elif (self._human.deck.size < 3):
