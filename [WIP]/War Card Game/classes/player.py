@@ -9,6 +9,9 @@ class Player:
     def has_empty_deck(self):
         return (self.deck.size == 0)
     
+    def can_fight_war(self):
+        return (self.deck.size > 3)
+    
     def draw_card(self):
         if not self.has_empty_deck():
             return self.deck.draw()

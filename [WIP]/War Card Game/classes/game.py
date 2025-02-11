@@ -16,10 +16,10 @@ class WarCardGame:
         
     def make_initial_decks(self):
         self._deck.shuffle()
-        self.make_deck(self._human)
-        self.make_deck(self._computer)
+        self.make_player_stack(self._human)
+        self.make_player_stack(self._computer)
     
-    def make_deck(self, player):
+    def make_player_stack(self, player):
         for i in range(26):
             card = self._deck.draw()
             player.add_card(card)
@@ -42,8 +42,11 @@ class WarCardGame:
        
         match winner:
             case 0:
-                print("It's a tie. This is WAR!")
-                self.start_war(cards_won)
+                if self.check_war_viability():
+                    print("It's a tie. This is ⚔️ WAR ⚔️!")
+                    self.start_war(cards_won)
+                else:
+                    print("Game over...")
             case 1:
                 print(f'WINNER: you. (+{len(cards_won)//2} cards)')
                 self.add_cards_to_player(self._human, cards_won)
@@ -80,28 +83,31 @@ class WarCardGame:
         human_cards    = []
         computer_cards = []
         
-        if (self._human.deck.size >= 3) and (self._computer.deck.size >= 3):
-            for i in range(3):
-                human_card    = self._human   .draw_card()
-                computer_card = self._computer.draw_card()
-                
-                human_cards   .append(   human_card)
-                computer_cards.append(computer_card)
+        for i in range(3):
+            human_card    = self._human   .draw_card()
+            computer_card = self._computer.draw_card()
             
-            print('Both cards are kept in the table.')
-            print('Six more cards drawn (hidden): 🂠 🂠 🂠 ║ 🂠 🂠 🂠')
-            
-            self.start_battle(cards_from_war= human_cards + computer_cards + cards_from_battle)
-        elif (self._human.deck.size < 3):
-            print(f"WINNER: computer, because you only have {self._human.deck.size} cards and can't fight the war.")
+            human_cards   .append(   human_card)
+            computer_cards.append(computer_card)
+        
+        print('Both previous cards are kept in the table.')
+        print('Six more cards drawn (hidden): 🂠 🂠 🂠 ║ 🂠 🂠 🂠')
+        
+        self.start_battle(cards_from_war= human_cards + computer_cards + cards_from_battle)
+    
+    def check_war_viability(self):
+        if self._human.can_fight_war() and self._computer.can_fight_war():
+            return True
+        elif not self._human.can_fight_war():
+            print(f"WINNER: computer, because you only have {self._human.deck.size} cards and, thus, can't fight the war.")
             return False
-        elif (self._computer.deck.size < 3):
-            print(f"WINNER: you, because computer only have {self._computer.deck.size} cards and can't fight the war.")
+        elif not self._computer.can_fight_war():
+            print(f"WINNER: you, because computer only have {self._computer.deck.size} cards and, thus, can't fight the war.")
             return False
         else:
             print('Error! Unclear if both players are able to fight the war.')
             return False
-
+    
     def check_game_over(self):
         if self._human.has_empty_deck():
             print('GAME OVER! The computer won.')

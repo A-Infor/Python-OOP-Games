@@ -17,4 +17,8 @@ while not game.check_game_over():
     print(f'\nRound: {round_counter}')
     game.start_battle()
     game.print_stack_sizes()
+    
+    if round_counter > 999:
+        print('There were too many battles and still no winner. Both armies are exhausted and make a peace treaty.')
+        break
 print('End of the game')
