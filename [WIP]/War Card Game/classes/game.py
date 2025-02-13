@@ -1,4 +1,4 @@
-from time import sleep
+from .conflict import Battle
 
 class WarCardGame:
     
@@ -12,9 +12,26 @@ class WarCardGame:
         self._deck     = deck
         
         print('War Card Game')
-        self.make_initial_decks()
+        self.make_initial_player_stacks()
         
-    def make_initial_decks(self):
+        round_counter = 0
+        while not self.check_game_over():
+            round_counter += 1
+            print(f'\nRound: {round_counter}', end=' - ')
+            
+            battle                    = Battle(human, computer)
+            human_card, computer_card = battle.draw_cards()
+            winner    , cards_won     = battle.engage    (human_card, computer_card)
+            self.define_winner(winner, cards_won)
+            
+            self.print_stack_sizes()
+            
+            if round_counter > 999:
+                print('There were too many battles and still no winner. Both armies are exhausted and make a peace treaty.')
+                break
+        print('End of the game')
+        
+    def make_initial_player_stacks(self):
         self._deck.shuffle()
         self.make_player_stack(self._human)
         self.make_player_stack(self._computer)
@@ -23,77 +40,6 @@ class WarCardGame:
         for i in range(26):
             card = self._deck.draw()
             player.add_card(card)
-    
-    def start_battle(self, cards_from_war=None):
-        print('Battle begins!')
-        
-        human_card    = self._human   .draw_card()
-        computer_card = self._computer.draw_card()
-        
-        print('CARDS DRAWN:')
-        print("\tHUMAN'S\t\t\tCOMPUTER'S", end='\n\t')
-        human_card.show()
-        print('', end='\t\t\t\t')
-        computer_card.show()
-        print()
-        
-        winner    = self.get_round_winner(human_card, computer_card)
-        cards_won = self.get_cards_won   (human_card, computer_card, cards_from_war)
-       
-        match winner:
-            case 0:
-                if self.check_war_viability():
-                    print("It's a tie. This is ⚔️ WAR ⚔️!")
-                    self.start_war(cards_won)
-                else:
-                    print("Game over...")
-            case 1:
-                print(f'WINNER: you. (+{len(cards_won)//2} cards)')
-                self.add_cards_to_player(self._human, cards_won)
-            case 2:
-                print(f'WINNER: computer. (+{len(cards_won)//2} cards)')
-                self.add_cards_to_player(self._computer, cards_won)
-            case _:
-                print('An error occurred! Non-valid winner ID.')
-                return False
-        return winner
-        
-    def get_round_winner(self, human_card, computer_card):
-        if   human_card.value > computer_card.value:
-            return WarCardGame.ID_HUMAN
-        elif human_card.value < computer_card.value:
-            return WarCardGame.ID_COMPUTER
-        elif human_card.value == computer_card.value:
-            return WarCardGame.ID_TIE
-        else:
-            print('Error! Invalid card comparison occured!')
-            return None
-    
-    def get_cards_won(self, human_card, computer_card, previous_cards):
-        if previous_cards:
-            return [human_card, computer_card] + previous_cards
-        else:
-            return [human_card, computer_card]
-    
-    def add_cards_to_player(self, player, list_of_cards):
-        for card in list_of_cards:
-            player.add_card(card)
-    
-    def start_war(self, cards_from_battle):
-        human_cards    = []
-        computer_cards = []
-        
-        for i in range(3):
-            human_card    = self._human   .draw_card()
-            computer_card = self._computer.draw_card()
-            
-            human_cards   .append(   human_card)
-            computer_cards.append(computer_card)
-        
-        print('Both previous cards are kept in the table.')
-        print('Six more cards drawn (hidden): 🂠 🂠 🂠 ║ 🂠 🂠 🂠')
-        
-        self.start_battle(cards_from_war= human_cards + computer_cards + cards_from_battle)
     
     def check_war_viability(self):
         if self._human.can_fight_war() and self._computer.can_fight_war():
@@ -107,7 +53,27 @@ class WarCardGame:
         else:
             print('Error! Unclear if both players are able to fight the war.')
             return False
-    
+
+    def define_winner(self, winner, cards_won):
+        match winner:
+            case 'TIE':
+                # if self.check_war_viability():
+                print("It's a tie. This is ⚔️ WAR ⚔️!")
+                # input()
+                # self.start_war(cards_won)
+                # else:
+                    # print("Game over...")
+            case 'Human':
+                print(f'WINNER: you. (+{len(cards_won)//2} cards)')
+                self.add_cards_to_player(self._human, cards_won)
+            case 'Computer':
+                print(f'WINNER: computer. (+{len(cards_won)//2} cards)')
+                self.add_cards_to_player(self._computer, cards_won)
+            case _:
+                print('An error occurred! Non-valid winner ID.')
+                return False
+        return winner    
+
     def check_game_over(self):
         if self._human.has_empty_deck():
             print('GAME OVER! The computer won.')
@@ -117,6 +83,10 @@ class WarCardGame:
             return True
         else:
             return False
+    
+    def add_cards_to_player(self, player, list_of_cards):
+        for card in list_of_cards:
+            player.add_card(card)
     
     def print_stack_sizes(self):
         print('STACK SIZES:')
