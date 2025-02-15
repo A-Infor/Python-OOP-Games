@@ -35,12 +35,15 @@ class TicTacToeGame:
                         case 1    : # No checks
                             computer_move = computer.get_move(None)
                             self.board.submit_move(computer, computer_move)
-                        case 2 | 3: # Looks which positions are empty before choosing
+                        case 2    : # Looks which positions are empty before choosing
                             computer_move = computer.get_move(self.board.enumerate_empty_positions())
                             self.board.submit_move(computer, computer_move)
+                        case 3    :
+                            print('Level 3 was not yet implemented!')
+                            return False
                         case _    :
                             print('Error! Invalid difficulty level selected.')
-                            return
+                            return False
                     self.board.print_actual_board()
                     
                     if self.board.check_is_game_over(computer, computer_move):

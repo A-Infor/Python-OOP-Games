@@ -29,36 +29,36 @@ class PlayerComputer(Player):
     
     MARKER = 'O'
     
-    def __init__(self, difficulty_level):
-        self.intelligence = difficulty_level
-    
-    def get_move(self, empty_positions_set):
-        match self.intelligence:
-            case 1:
-                return self.get_move_1()
-            case 2:
-                return self.get_move_2(empty_positions_set)
-            case 3:
-                return self.get_move_3(empty_positions_set)
+    def __new__(cls, difficulty_level):
+        match difficulty_level:
+            case 1: return object.__new__(PlayerComputer1)
+            case 2: return object.__new__(PlayerComputer2)
+            case 3: return object.__new__(PlayerComputer3)
             case _:
                 print('Error: invalid difficulty level!')
                 return False
+
+class PlayerComputer1(PlayerComputer):
     
-    def get_move_1(self):
+    def get_move(self, empty_positions_set):
         # Chooses any cell, including already filled ones.
         valid_choice_options = list(range(1, 10))
         move = Move(random.choice(valid_choice_options))
         print('Computer move (1-9):', move.position)
         
         return move
+
+class PlayerComputer2(PlayerComputer):
     
-    def get_move_2(self, valid_choice_options):
+    def get_move(self, valid_choice_options):
         # Only chooses blank cells, still at random.
         move = Move(random.choice(list(valid_choice_options)))
         print('Computer move (1-9):', move.position)
         
         return move
+
+class PlayerComputer3(PlayerComputer):
     
-    def get_move_3(self, valid_choice_options):
+    def get_move(self, valid_choice_options):
         # Doesn't play at random.
         pass
