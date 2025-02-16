@@ -20,15 +20,6 @@ class Board:
                             [Board.EMPTY_CELL,Board.EMPTY_CELL,Board.EMPTY_CELL] ,
                             [Board.EMPTY_CELL,Board.EMPTY_CELL,Board.EMPTY_CELL] ]
     
-    def enumerate_empty_positions(self):
-        empty_positions_set = set()
-
-        for position, (row, col) in Board.BOARD_COORDS_MAP.items():
-            if self.game_board[row][col] == Board.EMPTY_CELL:
-                empty_positions_set.add(int(position))
-
-        return empty_positions_set
-            
     def print_board_mapping(self):
         for row in Board.BOARD_MAPPING:
             print('\n|', end='')

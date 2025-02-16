@@ -50,15 +50,85 @@ class PlayerComputer1(PlayerComputer):
 
 class PlayerComputer2(PlayerComputer):
     
-    def get_move(self, valid_choice_options):
+    def get_move(self, board):
         # Only chooses blank cells, still at random.
+        valid_choice_options = self.enumerate_empty_positions(board)
+        
         move = Move(random.choice(list(valid_choice_options)))
         print('Computer move (1-9):', move.position)
         
         return move
+    
+    def enumerate_empty_positions(self, board):
+        empty_positions_set = set()
+
+        for position, (row, col) in board.BOARD_COORDS_MAP.items():
+            if board.game_board[row][col] == board.EMPTY_CELL:
+                empty_positions_set.add(int(position))
+
+        return empty_positions_set
 
 class PlayerComputer3(PlayerComputer):
     
-    def get_move(self, valid_choice_options):
+    def get_move(self, board):
         # Doesn't play at random.
-        pass
+        
+        # First, choose a direction where 3 marks can fit:
+        direction = random.choice(['Vertical', 'Horizontal', 'Diagonal', 'Antidiagonal'])
+        match direction:
+            case 'Vertical'    :
+                valid_choice_options = self.enumerate_empty_columns()
+                if valid_choice_options: pass #       Play
+                else                   : pass # Don't play
+            case 'Horizontal'  :
+                valid_choice_options = self.enumerate_empty_rows()
+                if valid_choice_options: pass #       Play
+                else                   : pass # Don't play
+            case 'Diagonal'    :
+                if self.is_diagonal_empty(): pass #       Play
+                else                       : pass # Don't play
+            case 'Antidiagonal':
+                if self.is_antidiagonal_empty(): pass #       Play
+                else                           : pass # Don't play
+        
+        move = None # Placeholder
+        
+        return move
+    
+    def enumerate_empty_columns(self, board):
+        cols = [0, 1, 2]
+        for col in cols:
+            # Check if the col has all 3 lines empty:
+            for row in [0, 1, 2]:
+                # print(row, col)
+                if board.game_board[row][col] != board.EMPTY_CELL:
+                    cols.remove(col)
+                    print(f'Computer says: col {col} is not empty.')
+                    break
+        
+        return cols
+
+    def enumerate_empty_rows(self, board):
+        rows = [0, 1, 2]
+        for row in rows:
+            # Check if the col has all 3 lines empty:
+            for col in [0, 1, 2]:
+                # print(row, col)
+                if board.game_board[row][col] != board.EMPTY_CELL:
+                    rows.remove(row)
+                    print(f'Computer says: row {row} is not empty.')
+                    break
+        
+        return rows
+    
+    def is_diagonal_empty(self, board):
+        return (board.game_board[2][0] == board.EMPTY_CELL
+            and board.game_board[1][1] == board.EMPTY_CELL
+            and board.game_board[0][2] == board.EMPTY_CELL)
+    
+    def is_antidiagonal_empty(self, board):
+        return (board.game_board[0][0] == board.EMPTY_CELL
+            and board.game_board[1][1] == board.EMPTY_CELL
+            and board.game_board[2][2] == board.EMPTY_CELL)
+    
+game_board[2][0] == EMPTY_CELL and game_board[1][1] == EMPTY_CELL and game_board[0][2] == EMPTY_CELL
