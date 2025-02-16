@@ -9,7 +9,7 @@ class TicTacToeGame:
         self.difficulty_level = self._set_difficulty_level()
         self.board = Board(self.difficulty_level)
         
-        if self.difficulty_level >= 0 <= 3:
+        if self.difficulty_level in [0, 1, 2, 3]:
             self.run_game()
         
     def run_game(self):
@@ -31,20 +31,8 @@ class TicTacToeGame:
                     print("It's a tie!")
                     break
                 else: # Else, computer plays:
-                    match self.difficulty_level:
-                        case 1    : # No checks
-                            computer_move = computer.get_move(None)
-                            self.board.submit_move(computer, computer_move)
-                        case 2    : # Looks which positions are empty before choosing
-                            computer_move = computer.get_move(self.board)
-                            self.board.submit_move(computer, computer_move)
-                        case 3    :
-                            print('Level 3 was not yet implemented!')
-                            # computer_move = computer.get_move(self.board)
-                            return False
-                        case _    :
-                            print('Error! Invalid difficulty level selected.')
-                            return False
+                    computer_move = computer.get_move(self.board)
+                    self.board.submit_move(computer, computer_move)
                     self.board.print_actual_board()
                     
                     if self.board.check_is_game_over(computer, computer_move):
@@ -79,6 +67,8 @@ class TicTacToeGame:
     \t1.... Totally random moves only.           Allowed, wastes a turn.
     \t2.... Random moves, only blank positions.  Not allowed.
     \t3.... Knows how to play and tries to win.  Not allowed.
+    
+    Please notice: level 3 is still being implemented!
     
     Your choice: """))
     
