@@ -68,30 +68,33 @@ class PlayerComputer2(PlayerComputer):
 
         return empty_positions_set
 
-class PlayerComputer3(PlayerComputer):
+class PlayerComputer3(PlayerComputer2):
     
     def __init__(self, _):
         # Setting Computer memory:
-        self._chosen_direction   = None
-        self._valid_directions   = ['Vertical', 'Horizontal', 'Diagonal', 'Antidiagonal']
+        self._chosen_direction     = None
+        self._valid_directions     = ['Diagonal', 'Antidiagonal'] # Nor ready yet: 'Vertical', 'Horizontal'
         
-        self._empty_columns      = [0, 1, 2]
-        self._empty_rows         = [0, 1, 2]
-        self._empty_diagonal     = True
-        self._empty_antidiagonal = True
+        self._empty_columns        = [0, 1, 2]
+        self._empty_rows           = [0, 1, 2]
+        self._diagonal_count       = 0
+        self._antidiagonal_count   = 0
     
     def get_move(self, board):
         # Doesn't play at random.
+
+        valid_choice_options = self.enumerate_board_empty_positions(board)
         
         if self._chosen_direction == None:
             self._chosen_direction = random.choice(self._valid_directions)
+            print (f'Chosen direction: {self._chosen_direction}')
         
         match self._chosen_direction:
             case 'Vertical'    :
-                valid_choice_options = self.enumerate_empty_columns(board)
-                if valid_choice_options        :
+                empty_cols = self.enumerate_empty_columns(board)
+                if empty_cols        :
                     # Choose one column if none is selected:
-                    col_choice = random.choice(valid_choice_options)
+                    col_choice = random.choice(empty_cols)
                     # Select one empty cell of this column:
                     row_choice = random.choice([0, 1, 2])
                     # Translates coordinates:
@@ -100,10 +103,10 @@ class PlayerComputer3(PlayerComputer):
                     move = Move(cell_choice)
                 else                           : pass # Don't play
             case 'Horizontal'  :
-                valid_choice_options = self.enumerate_empty_rows(board)
-                if valid_choice_options        :
+                empty_rows = self.enumerate_empty_rows(board)
+                if empty_rows        :
                     # Choose one row if none is selected:
-                    row_choice = random.choice(valid_choice_options)
+                    row_choice = random.choice(empty_rows)
                     # Select one empty cell of this row:
                     col_choice = random.choice([0, 1, 2])
                     # Translates coordinates:
@@ -113,11 +116,17 @@ class PlayerComputer3(PlayerComputer):
                 else                           : pass # Don't play
             case 'Diagonal'    :
                 # Update memory:
-                self._empty_diagonal = self.is_diagonal_empty(board)
+                self._diagonal_count = self.count_diagonal_or_antidiagonal_marks('DIAGONAL', board)
+                print(f'Diagonal count: {self._diagonal_count}')
                 
-                if self._empty_diagonal    :
+                if self._diagonal_count < 3 :
+                    # Check which cells are empty:
+                    cell_options       = [1, 5, 9]
+                    valid_cell_options = []
+                    for cell in cell_options:
+                        if cell in valid_choice_options: valid_cell_options.append(cell)
                     # Select one empty cell of the diagonal:
-                    cell_choice = random.choice([1, 5, 9])
+                    cell_choice = random.choice(valid_cell_options)
                     # Submit move:
                     move = Move(cell_choice)
                 else                           :
@@ -125,11 +134,17 @@ class PlayerComputer3(PlayerComputer):
                     self._valid_directions.remove('Diagonal')
             case 'Antidiagonal':
                 # Update memory:
-                self._empty_antidiagonal = self.is_antidiagonal_empty(board)
+                self._antidiagonal_count = self.count_diagonal_or_antidiagonal_marks('ANTIDIAGONAL', board)
+                print(f'Antidiagonal count: {self._antidiagonal_count}')
                 
-                if self._empty_antidiagonal:
+                if self._antidiagonal_count < 3 :
+                    # Check which cells are empty:
+                    cell_options = [7, 5, 3]
+                    valid_cell_options = []
+                    for cell in cell_options:
+                        if cell in valid_choice_options: valid_cell_options.append(cell)
                     # Select one empty cell of the antidiagonal:
-                    cell_choice = random.choice([7, 5, 3])
+                    cell_choice = random.choice(valid_cell_options)
                     # Submit move:
                     move = Move(cell_choice)
                 else                           :
@@ -172,12 +187,16 @@ class PlayerComputer3(PlayerComputer):
         
         return rows
     
-    def is_diagonal_empty(self, board):
-        return (board.game_board[2][0] == board.EMPTY_CELL
-            and board.game_board[1][1] == board.EMPTY_CELL
-            and board.game_board[0][2] == board.EMPTY_CELL)
-    
-    def is_antidiagonal_empty(self, board):
-        return (board.game_board[0][0] == board.EMPTY_CELL
-            and board.game_board[1][1] == board.EMPTY_CELL
-            and board.game_board[2][2] == board.EMPTY_CELL)
+    def count_diagonal_or_antidiagonal_marks(self, diagonal_or_antidiagonal, board):
+        DIAGONAL     = [board.game_board[2][0],
+                        board.game_board[1][1],
+                        board.game_board[0][2]]
+        ANTIDIAGONAL = [board.game_board[0][0],
+                        board.game_board[1][1],
+                        board.game_board[2][2]]
+        marks_count  = 0
+        
+        for cell in (DIAGONAL if diagonal_or_antidiagonal.upper == 'DIAGONAL' else ANTIDIAGONAL):
+            if cell != board.EMPTY_CELL: marks_count += 1
+        
+        return marks_count
