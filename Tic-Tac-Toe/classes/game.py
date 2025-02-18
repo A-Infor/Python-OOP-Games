@@ -32,12 +32,16 @@ class TicTacToeGame:
                     break
                 else: # Else, computer plays:
                     computer_move = computer.get_move(self.board)
-                    self.board.submit_move(computer, computer_move)
-                    self.board.print_actual_board()
+                    if computer_move:
+                        self.board.submit_move(computer, computer_move)
+                        self.board.print_actual_board()
                     
-                    if self.board.check_is_game_over(computer, computer_move):
-                        print('The computer won this round...')
-                        break
+                        if self.board.check_is_game_over(computer, computer_move):
+                            print('The computer won this round...')
+                            break
+                    else:
+                        print("Computer couldn't play, for some reason...")
+                        
             while True:
                 play_again = input('Would you like to play again?\nX = Yes, O = No ')
                 

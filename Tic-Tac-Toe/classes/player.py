@@ -77,85 +77,88 @@ class PlayerComputer3(PlayerComputer2):
         
         self._empty_columns        = [0, 1, 2]
         self._empty_rows           = [0, 1, 2]
-        self._diagonal_count       = 0
-        self._antidiagonal_count   = 0
+        self._diagonal_count       =  0
+        self._antidiagonal_count   =  0
     
     def get_move(self, board):
         # Doesn't play at random.
-
+        move                 = None
         valid_choice_options = self.enumerate_board_empty_positions(board)
+
+        while   self._valid_directions:
+            if  self._chosen_direction is None:
+                self._chosen_direction = random.choice(self._valid_directions)
+                print (f'Chosen direction: {self._chosen_direction}')
+            
+            match self._chosen_direction:
+                case 'Vertical'    :
+                    empty_cols = self.enumerate_empty_columns(board)
+                    if empty_cols        :
+                        # Choose one column if none is selected:
+                        col_choice = random.choice(empty_cols)
+                        # Select one empty cell of this column:
+                        row_choice = random.choice([0, 1, 2])
+                        # Translates coordinates:
+                        cell_choice = board.BOARD_COORDS_MAP_REVERSED[(row_choice, col_choice)]
+                        # Submit move:
+                        move = Move(cell_choice)
+                    else                           : pass # Don't play
+                case 'Horizontal'  :
+                    empty_rows = self.enumerate_empty_rows(board)
+                    if empty_rows        :
+                        # Choose one row if none is selected:
+                        row_choice = random.choice(empty_rows)
+                        # Select one empty cell of this row:
+                        col_choice = random.choice([0, 1, 2])
+                        # Translates coordinates:
+                        cell_choice = board.BOARD_COORDS_MAP_REVERSED[(row_choice, col_choice)]
+                        # Submit move:
+                        move = Move(cell_choice)
+                    else                           : pass # Don't play
+                case 'Diagonal'    :
+                    # Update memory:
+                    self._diagonal_count = self.count_diagonal_or_antidiagonal_marks('DIAGONAL', board)
+                    print(f'Diagonal count: {self._diagonal_count}')
+                    
+                    if self._diagonal_count < 3 :
+                        empty_cell_options = self._list_empty_cells(board, valid_choice_options, [1, 5, 9])
+                        cell_choice        = random.choice(empty_cell_options)
+                        move               = Move(cell_choice)
+                        break
+                    else                           :
+                        # Not a valid direction anymore:
+                        self._valid_directions.remove('Diagonal')
+                        self._chosen_direction = None
+                case 'Antidiagonal':
+                    # Update memory:
+                    self._antidiagonal_count = self.count_diagonal_or_antidiagonal_marks('ANTIDIAGONAL', board)
+                    print(f'Antidiagonal count: {self._antidiagonal_count}')
+                    
+                    if self._antidiagonal_count < 3 :
+                        empty_cell_options = self._list_empty_cells(board, valid_choice_options, [7, 5, 3])
+                        cell_choice        = random.choice(empty_cell_options)
+                        move               = Move(cell_choice)
+                        break
+                    else                           :
+                        # Not a valid direction anymore:
+                        self._valid_directions.remove('Antidiagonal')
+                        self._chosen_direction = None
+                case _             :
+                    print('Error! Invalid direction chosen.')
+                    return False
+            
+            print(f'Valid directions: {self._valid_directions}')
         
-        if self._chosen_direction == None:
-            self._chosen_direction = random.choice(self._valid_directions)
-            print (f'Chosen direction: {self._chosen_direction}')
-        
-        match self._chosen_direction:
-            case 'Vertical'    :
-                empty_cols = self.enumerate_empty_columns(board)
-                if empty_cols        :
-                    # Choose one column if none is selected:
-                    col_choice = random.choice(empty_cols)
-                    # Select one empty cell of this column:
-                    row_choice = random.choice([0, 1, 2])
-                    # Translates coordinates:
-                    cell_choice = board.BOARD_COORDS_MAP_REVERSED[(row_choice, col_choice)]
-                    # Submit move:
-                    move = Move(cell_choice)
-                else                           : pass # Don't play
-            case 'Horizontal'  :
-                empty_rows = self.enumerate_empty_rows(board)
-                if empty_rows        :
-                    # Choose one row if none is selected:
-                    row_choice = random.choice(empty_rows)
-                    # Select one empty cell of this row:
-                    col_choice = random.choice([0, 1, 2])
-                    # Translates coordinates:
-                    cell_choice = board.BOARD_COORDS_MAP_REVERSED[(row_choice, col_choice)]
-                    # Submit move:
-                    move = Move(cell_choice)
-                else                           : pass # Don't play
-            case 'Diagonal'    :
-                # Update memory:
-                self._diagonal_count = self.count_diagonal_or_antidiagonal_marks('DIAGONAL', board)
-                print(f'Diagonal count: {self._diagonal_count}')
-                
-                if self._diagonal_count < 3 :
-                    # Check which cells are empty:
-                    cell_options       = [1, 5, 9]
-                    valid_cell_options = []
-                    for cell in cell_options:
-                        if cell in valid_choice_options: valid_cell_options.append(cell)
-                    # Select one empty cell of the diagonal:
-                    cell_choice = random.choice(valid_cell_options)
-                    # Submit move:
-                    move = Move(cell_choice)
-                else                           :
-                    # Not a valid direction anymore:
-                    self._valid_directions.remove('Diagonal')
-            case 'Antidiagonal':
-                # Update memory:
-                self._antidiagonal_count = self.count_diagonal_or_antidiagonal_marks('ANTIDIAGONAL', board)
-                print(f'Antidiagonal count: {self._antidiagonal_count}')
-                
-                if self._antidiagonal_count < 3 :
-                    # Check which cells are empty:
-                    cell_options = [7, 5, 3]
-                    valid_cell_options = []
-                    for cell in cell_options:
-                        if cell in valid_choice_options: valid_cell_options.append(cell)
-                    # Select one empty cell of the antidiagonal:
-                    cell_choice = random.choice(valid_cell_options)
-                    # Submit move:
-                    move = Move(cell_choice)
-                else                           :
-                    # Not a valid direction anymore:
-                    self._valid_directions.remove('Antidiagonal')
-            case _             :
-                print('Error! Invalid direction chosen.')
-                return False
-        
-        print(f'Valid directions: {self._valid_directions}')
         return move
+    
+    def _list_empty_cells(self, board, valid_choice_options, cell_options):
+        
+        valid_cell_options   = []
+        
+        for cell in cell_options:
+            if cell in valid_choice_options: valid_cell_options.append(cell)
+        
+        return valid_cell_options
     
     def enumerate_empty_columns(self, board):
         cols = [0, 1, 2]
@@ -196,7 +199,7 @@ class PlayerComputer3(PlayerComputer2):
                         board.game_board[2][2]]
         marks_count  = 0
         
-        for cell in (DIAGONAL if diagonal_or_antidiagonal.upper == 'DIAGONAL' else ANTIDIAGONAL):
+        for cell in (DIAGONAL if diagonal_or_antidiagonal.upper() == 'DIAGONAL' else ANTIDIAGONAL):
             if cell != board.EMPTY_CELL: marks_count += 1
         
         return marks_count
