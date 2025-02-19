@@ -73,10 +73,13 @@ class PlayerComputer3(PlayerComputer2):
     def __init__(self, _):
         # Setting Computer memory:
         self._chosen_direction     = None
-        self._valid_directions     = ['Diagonal', 'Antidiagonal'] # Nor ready yet: 'Vertical', 'Horizontal'
+        self._valid_directions     = ['Diagonal', 'Antidiagonal'] # Nor ready yet: ['Vertical', 'Horizontal']
         
         self._empty_columns        = [0, 1, 2]
+        self._chosen_column        = None
         self._empty_rows           = [0, 1, 2]
+        self._chosen_row           = None
+        
         self._diagonal_count       =  0
         self._antidiagonal_count   =  0
     
@@ -92,29 +95,35 @@ class PlayerComputer3(PlayerComputer2):
             
             match self._chosen_direction:
                 case 'Vertical'    :
-                    empty_cols = self.enumerate_empty_columns(board)
-                    if empty_cols        :
-                        # Choose one column if none is selected:
-                        col_choice = random.choice(empty_cols)
-                        # Select one empty cell of this column:
-                        row_choice = random.choice([0, 1, 2])
-                        # Translates coordinates:
-                        cell_choice = board.BOARD_COORDS_MAP_REVERSED[(row_choice, col_choice)]
-                        # Submit move:
-                        move = Move(cell_choice)
-                    else                           : pass # Don't play
+                    if self._chosen_column is None:
+                        empty_cols = self.enumerate_empty_columns(board)
+                        if empty_cols:
+                            self._chosen_column = random.choice(empty_cols)
+                            # Select one empty cell of this column:
+                            row_choice = random.choice([0, 1, 2])
+                            # Translates coordinates:
+                            cell_choice = board.BOARD_COORDS_MAP_REVERSED[(row_choice, self._chosen_column)]
+                            # Submit move:
+                            move = Move(cell_choice)
+                        else         :
+                            # Not a valid direction anymore:
+                            self._valid_directions.remove('Vertical')
+                            self._chosen_direction = None
                 case 'Horizontal'  :
-                    empty_rows = self.enumerate_empty_rows(board)
-                    if empty_rows        :
-                        # Choose one row if none is selected:
-                        row_choice = random.choice(empty_rows)
-                        # Select one empty cell of this row:
-                        col_choice = random.choice([0, 1, 2])
-                        # Translates coordinates:
-                        cell_choice = board.BOARD_COORDS_MAP_REVERSED[(row_choice, col_choice)]
-                        # Submit move:
-                        move = Move(cell_choice)
-                    else                           : pass # Don't play
+                    if self._chosen_row is None:
+                        empty_rows = self.enumerate_empty_rows(board)
+                        if empty_rows:
+                            self._chosen_row = random.choice(empty_rows)
+                            # Select one empty cell of this row:
+                            col_choice = random.choice([0, 1, 2])
+                            # Translates coordinates:
+                            cell_choice = board.BOARD_COORDS_MAP_REVERSED[(self._chosen_row, col_choice)]
+                            # Submit move:
+                            move = Move(cell_choice)
+                        else         :
+                            # Not a valid direction anymore:
+                            self._valid_directions.remove('Horizontal')
+                            self._chosen_direction = None
                 case 'Diagonal'    :
                     # Update memory:
                     self._diagonal_count = self.count_diagonal_or_antidiagonal_marks('DIAGONAL', board)
