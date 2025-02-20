@@ -73,12 +73,15 @@ class PlayerComputer3(PlayerComputer2):
     def __init__(self, _):
         # Setting Computer memory:
         self._chosen_direction     = None
-        self._valid_directions     = ['Diagonal', 'Antidiagonal'] # Nor ready yet: ['Vertical', 'Horizontal']
+        self._valid_directions     = ['Vertical', 'Diagonal', 'Antidiagonal'] # Not ready yet: ['Horizontal']
         
-        self._empty_columns        = [0, 1, 2]
+        self._empty_columns        = []
         self._chosen_column        = None
-        self._empty_rows           = [0, 1, 2]
+        self._chosen_column_count  = 0
+        
+        self._empty_rows           = []
         self._chosen_row           = None
+        self._chosen_row_count     = 0
         
         self._diagonal_count       =  0
         self._antidiagonal_count   =  0
@@ -96,19 +99,32 @@ class PlayerComputer3(PlayerComputer2):
             match self._chosen_direction:
                 case 'Vertical'    :
                     if self._chosen_column is None:
-                        empty_cols = self.enumerate_empty_columns(board)
-                        if empty_cols:
-                            self._chosen_column = random.choice(empty_cols)
-                            # Select one empty cell of this column:
+                        if self._list_empty_cells(board, valid_choice_options, [1, 4, 7]): self._empty_columns.append(0)
+                        if self._list_empty_cells(board, valid_choice_options, [2, 5, 8]): self._empty_columns.append(1)
+                        if self._list_empty_cells(board, valid_choice_options, [3, 6, 9]): self._empty_columns.append(2)
+                        
+                        if len(self._empty_columns) > 0:
+                            self._chosen_column = random.choice(self._empty_columns)
+                        else         :
+                            # Not a valid direction anymore:
+                            self._valid_directions.remove('Vertical')
+                            self._chosen_direction = None
+                    else:
+                        # Update memory:
+                        self._chosen_column_count = self.count_vertical_or_horizontal_marks(board, 'Vertical', self._chosen_column)
+                        print(f'chosen_column_count: {self._chosen_column_count}')
+                        if self._chosen_column_count < 3:
+                            # Select one empty cell of the chosen column:
                             row_choice = random.choice([0, 1, 2])
                             # Translates coordinates:
                             cell_choice = board.BOARD_COORDS_MAP_REVERSED[(row_choice, self._chosen_column)]
                             # Submit move:
                             move = Move(cell_choice)
-                        else         :
-                            # Not a valid direction anymore:
-                            self._valid_directions.remove('Vertical')
-                            self._chosen_direction = None
+                            break
+                        else:
+                            # Not a valid column anymore:
+                            self._empty_columns.remove(self._chosen_column)
+                            self._chosen_column = None
                 case 'Horizontal'  :
                     if self._chosen_row is None:
                         empty_rows = self.enumerate_empty_rows(board)
@@ -169,35 +185,21 @@ class PlayerComputer3(PlayerComputer2):
         
         return valid_cell_options
     
-    def enumerate_empty_columns(self, board):
-        cols = [0, 1, 2]
-        for col in cols:
-            # Check if the col has all 3 lines empty:
-            for row in [0, 1, 2]:
-                # print(row, col)
-                if board.game_board[row][col] != board.EMPTY_CELL:
-                    print(f'Computer says: col {col} is not empty. ({row},{col})')
-                    cols.remove(col)
-                    break
-                else:
-                    print(f'Computer says: col {col} is empty. ({row},{col})')
+    def count_vertical_or_horizontal_marks(self, board, row_or_col, number):
+        VERTICAL     = {0: [board.game_board[2][0], board.game_board[1][0], board.game_board[0][0]],
+                        1: [board.game_board[2][1], board.game_board[1][1], board.game_board[0][1]],
+                        2: [board.game_board[2][2], board.game_board[1][2], board.game_board[0][2]]}
         
-        return cols
-
-    def enumerate_empty_rows(self, board):
-        rows = [0, 1, 2]
-        for row in rows:
-            # Check if the col has all 3 lines empty:
-            for col in [0, 1, 2]:
-                # print(row, col)
-                if board.game_board[row][col] != board.EMPTY_CELL:
-                    print(f'Computer says: row {row} is not empty. ({row},{col})')
-                    rows.remove(row)
-                    break
-                else:
-                    print(f'Computer says: row {row} is empty. ({row},{col})')
+        HORIZONTAL   = {0: [board.game_board[0][0], board.game_board[0][1], board.game_board[0][2]],
+                        1: [board.game_board[1][0], board.game_board[1][1], board.game_board[1][2]],
+                        2: [board.game_board[2][0], board.game_board[2][1], board.game_board[2][2]]}
         
-        return rows
+        marks_count  = 0
+        
+        for cell in (VERTICAL[number] if row_or_col.upper() == 'VERTICAL' else HORIZONTAL[number]):
+            if cell != board.EMPTY_CELL: marks_count += 1
+        
+        return marks_count
     
     def count_diagonal_or_antidiagonal_marks(self, diagonal_or_antidiagonal, board):
         DIAGONAL     = [board.game_board[2][0],
