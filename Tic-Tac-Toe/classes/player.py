@@ -73,7 +73,7 @@ class PlayerComputer3(PlayerComputer2):
     def __init__(self, _):
         # Setting Computer memory:
         self._chosen_direction     = None
-        self._valid_directions     = ['Vertical', 'Diagonal', 'Antidiagonal'] # Not ready yet: ['Horizontal']
+        self._valid_directions     = ['Vertical', 'Horizontal', 'Diagonal', 'Antidiagonal']
         
         self._empty_columns        = []
         self._chosen_column        = None
@@ -127,19 +127,32 @@ class PlayerComputer3(PlayerComputer2):
                             self._chosen_column = None
                 case 'Horizontal'  :
                     if self._chosen_row is None:
-                        empty_rows = self.enumerate_empty_rows(board)
-                        if empty_rows:
-                            self._chosen_row = random.choice(empty_rows)
-                            # Select one empty cell of this row:
+                        if self._list_empty_cells(board, valid_choice_options, [7, 8, 9]): self._empty_rows.append(0)
+                        if self._list_empty_cells(board, valid_choice_options, [4, 5, 6]): self._empty_rows.append(1)
+                        if self._list_empty_cells(board, valid_choice_options, [1, 2, 3]): self._empty_rows.append(2)
+                        
+                        if len(self._empty_rows) > 0:
+                            self._chosen_row = random.choice(self._empty_rows)
+                        else         :
+                            # Not a valid direction anymore:
+                            self._valid_directions.remove('Horizontal')
+                            self._chosen_direction = None
+                    else:
+                        # Update memory:
+                        self._chosen_row_count = self.count_vertical_or_horizontal_marks(board, 'Horizontal', self._chosen_row)
+                        print(f'chosen_column_count: {self._chosen_row_count}')
+                        if self._chosen_row_count < 3:
+                            # Select one empty col of the chosen row:
                             col_choice = random.choice([0, 1, 2])
                             # Translates coordinates:
                             cell_choice = board.BOARD_COORDS_MAP_REVERSED[(self._chosen_row, col_choice)]
                             # Submit move:
                             move = Move(cell_choice)
-                        else         :
-                            # Not a valid direction anymore:
-                            self._valid_directions.remove('Horizontal')
-                            self._chosen_direction = None
+                            break
+                        else:
+                            # Not a valid column anymore:
+                            self._empty_rows.remove(self._chosen_row)
+                            self._chosen_row = None
                 case 'Diagonal'    :
                     # Update memory:
                     self._diagonal_count = self.count_diagonal_or_antidiagonal_marks('DIAGONAL', board)
