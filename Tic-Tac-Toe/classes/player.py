@@ -73,7 +73,7 @@ class PlayerComputer3(PlayerComputer2):
     def __init__(self, _):
         # Setting Computer memory:
         self._chosen_direction     = None
-        self._valid_directions     = ['Vertical', 'Horizontal', 'Diagonal', 'Antidiagonal']
+        self._valid_directions     = ['Vertical', 'Horizontal'] #, 'Diagonal', 'Antidiagonal']
         
         self._empty_columns        = []
         self._chosen_column        = None
@@ -99,9 +99,11 @@ class PlayerComputer3(PlayerComputer2):
             match self._chosen_direction:
                 case 'Vertical'    :
                     if self._chosen_column is None:
-                        if self._list_empty_cells(board, valid_choice_options, [1, 4, 7]): self._empty_columns.append(0)
-                        if self._list_empty_cells(board, valid_choice_options, [2, 5, 8]): self._empty_columns.append(1)
-                        if self._list_empty_cells(board, valid_choice_options, [3, 6, 9]): self._empty_columns.append(2)
+                        columns = { 0 : [1, 4, 7] ,
+                                    1 : [2, 5, 8] ,
+                                    2 : [3, 6, 9] }
+                        for col_number, col_cells_list in columns.items():
+                            if self._list_empty_cells(board, valid_choice_options, col_cells_list): self._empty_columns.append(col_number)
                         
                         if len(self._empty_columns) > 0:
                             self._chosen_column = random.choice(self._empty_columns)
@@ -127,9 +129,12 @@ class PlayerComputer3(PlayerComputer2):
                             self._chosen_column = None
                 case 'Horizontal'  :
                     if self._chosen_row is None:
-                        if self._list_empty_cells(board, valid_choice_options, [7, 8, 9]): self._empty_rows.append(0)
-                        if self._list_empty_cells(board, valid_choice_options, [4, 5, 6]): self._empty_rows.append(1)
-                        if self._list_empty_cells(board, valid_choice_options, [1, 2, 3]): self._empty_rows.append(2)
+                        rows = { 0 : [7, 8, 9] ,
+                                 1 : [4, 5, 6] ,
+                                 2 : [1, 2, 3] }
+                        
+                        for row_number, row_cells_list in rows.items():
+                            if self._list_empty_cells(board, valid_choice_options, row_cells_list): self._empty_rows.append(row_number)
                         
                         if len(self._empty_rows) > 0:
                             self._chosen_row = random.choice(self._empty_rows)
@@ -150,7 +155,7 @@ class PlayerComputer3(PlayerComputer2):
                             move = Move(cell_choice)
                             break
                         else:
-                            # Not a valid column anymore:
+                            # Not a valid row anymore:
                             self._empty_rows.remove(self._chosen_row)
                             self._chosen_row = None
                 case 'Diagonal'    :
