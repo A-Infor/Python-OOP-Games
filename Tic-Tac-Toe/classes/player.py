@@ -99,18 +99,7 @@ class PlayerComputer3(PlayerComputer2):
             match self._chosen_direction:
                 case 'Vertical'    :
                     if self._chosen_column is None:
-                        columns = { 0 : [1, 4, 7] ,
-                                    1 : [2, 5, 8] ,
-                                    2 : [3, 6, 9] }
-                        for col_number, col_cells_list in columns.items():
-                            if self._list_empty_cells(board, valid_choice_options, col_cells_list): self._empty_columns.append(col_number)
-                        
-                        if len(self._empty_columns) > 0:
-                            self._chosen_column = random.choice(self._empty_columns)
-                        else         :
-                            # Not a valid direction anymore:
-                            self._valid_directions.remove('Vertical')
-                            self._chosen_direction = None
+                            self._choose_col_with_empty_cell(board, valid_choice_options)
                     else:
                         # Update memory:
                         self._chosen_column_count = self.count_vertical_or_horizontal_marks(board, 'Vertical', self._chosen_column)
@@ -129,23 +118,11 @@ class PlayerComputer3(PlayerComputer2):
                             self._chosen_column = None
                 case 'Horizontal'  :
                     if self._chosen_row is None:
-                        rows = { 0 : [7, 8, 9] ,
-                                 1 : [4, 5, 6] ,
-                                 2 : [1, 2, 3] }
-                        
-                        for row_number, row_cells_list in rows.items():
-                            if self._list_empty_cells(board, valid_choice_options, row_cells_list): self._empty_rows.append(row_number)
-                        
-                        if len(self._empty_rows) > 0:
-                            self._chosen_row = random.choice(self._empty_rows)
-                        else         :
-                            # Not a valid direction anymore:
-                            self._valid_directions.remove('Horizontal')
-                            self._chosen_direction = None
+                        self._choose_row_with_empty_cell(board, valid_choice_options)
                     else:
                         # Update memory:
                         self._chosen_row_count = self.count_vertical_or_horizontal_marks(board, 'Horizontal', self._chosen_row)
-                        print(f'chosen_column_count: {self._chosen_row_count}')
+                        print(f'chosen_row_count: {self._chosen_row_count}')
                         if self._chosen_row_count < 3:
                             # Select one empty col of the chosen row:
                             col_choice = random.choice([0, 1, 2])
@@ -193,6 +170,46 @@ class PlayerComputer3(PlayerComputer2):
             print(f'Valid directions: {self._valid_directions}')
         
         return move
+    
+    def _choose_row_with_empty_cell(self, board, valid_choice_options):
+        print('No chosen row yet!')
+        
+        rows = { 0 : [7, 8, 9] ,
+                 1 : [4, 5, 6] ,
+                 2 : [1, 2, 3] }
+        
+        # Checks which rows have at least 1 empty cell:
+        for row_number, row_cells_list in rows.items():
+            if self._list_empty_cells(board, valid_choice_options, row_cells_list): self._empty_rows.append(row_number)
+        print(f'Rows with at least 1 empty cell: {self._empty_rows}')
+        
+        if len(self._empty_rows) > 0:
+            self._chosen_row = random.choice(self._empty_rows)
+            print(f'Chose row {self._chosen_row}')
+        else         :
+            # Not a valid direction anymore:
+            self._valid_directions.remove('Horizontal')
+            self._chosen_direction = None
+    
+    def _choose_col_with_empty_cell(self, board, valid_choice_options):
+        print('No chosen column yet!')
+        
+        columns = { 0 : [1, 4, 7] ,
+                    1 : [2, 5, 8] ,
+                    2 : [3, 6, 9] }
+        
+        # Checks which cols have at least 1 empty cell:
+        for col_number, col_cells_list in columns.items():
+            if self._list_empty_cells(board, valid_choice_options, col_cells_list): self._empty_columns.append(col_number)
+        print(f'Cols with at least 1 empty cell: {self._empty_columns}')
+        
+        if len(self._empty_columns) > 0:
+            self._chosen_column = random.choice(self._empty_columns)
+            print(f'Chose col {self._chosen_column}')
+        else         :
+            # Not a valid direction anymore:
+            self._valid_directions.remove('Vertical')
+            self._chosen_direction = None
     
     def _list_empty_cells(self, board, valid_choice_options, cell_options):
         
