@@ -72,7 +72,7 @@ class TicTacToeGame:
     \t2.... Random moves, only blank positions.  Not allowed.
     \t3.... Knows how to play and tries to win.  Not allowed.
     
-    Please notice: level 3 is still being implemented!
+    Notice: level 3 is still being implemented!
     
     Your choice: """))
     
