@@ -34,7 +34,7 @@ class Conflict(ABC):
             return self._computer, prize
         elif human_card.value == computer_card.value:
             print("It's a tie. This is ⚔️ WAR ⚔️!")
-            return 'TIE', None
+            return 'TIE', prize
         else:
             print('Error! Invalid card comparison occured!')
             return None, None
@@ -58,21 +58,17 @@ class War(Conflict):
         super().__init__(human, computer)
         self._prize = prize
     
-    def draw_spoils_piles(self):
-        human_spoils_pile    = []
-        computer_spoils_pile = []
+    def draw_spoils_pile(self):
+        war_spoils_pile    = []
         
         for i in range(3):
             human_card    = self._human   .draw_card()
             computer_card = self._computer.draw_card()
             
-            human_spoils_pile   .append(   human_card)
-            computer_spoils_pile.append(computer_card)
-        
+            war_spoils_pile.append(human_card   )
+            war_spoils_pile.append(computer_card)
+            
         print('Both previous cards are kept in the battleground.')
         print('Six more cards drawn (hidden): 🂠 🂠 🂠 ║ 🂠 🂠 🂠')        
         
-        return human_spoils_pile, computer_spoils_pile
-    
-    # def start_war(self, cards_from_battle):
-    #     self.start_battle(cards_from_war= human_cards + computer_cards + cards_from_battle)
+        return war_spoils_pile
