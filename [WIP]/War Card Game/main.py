@@ -18,15 +18,16 @@ while not game.check_game_over():
     if (winner == human or winner == computer):
         game.award_prizes(winner, prize)
     elif winner == 'TIE':
-        # if self.check_war_viability():
-        # input()
-        war = War(human, computer, prize)
-        war_spoils_pile                  = war.draw_spoils_pile()
-        [prize.append(card) for card in war_spoils_pile]
-        human_card       , computer_card = war.draw_duel_cards ()
-        winner           , prize         = war.engage(human_card, computer_card, prize)
+        while winner == 'TIE':
+            # if self.check_war_viability():
+            war = War(human, computer, prize)
+            war_spoils_pile                  = war.draw_spoils_pile()
+            [prize.append(card) for card in war_spoils_pile]
+            human_card       , computer_card = war.draw_duel_cards ()
+            winner           , prize         = war.engage(human_card, computer_card, prize)
+            print(f'War Result: winner={winner}, prize={len(prize)}')
+
         game.award_prizes(winner, prize)
-        # input()
     else:
         print("Error in determining who was the last round's winner.")
         break
